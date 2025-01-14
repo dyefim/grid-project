@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { gridSize } from "../constants";
+import { floorToGrid } from "../utils";
 
 export interface Coordinates {
   x: number;
@@ -21,13 +21,12 @@ const useGridItems = () => {
   const handleBodyClick = useCallback((event: MouseEvent) => {
     const { clientX, clientY } = event;
 
-    // Calculate grid coordinates
-    const left = Math.floor(clientX / gridSize) * gridSize;
-    const top = Math.floor(clientY / gridSize) * gridSize;
-
     setItems((items) => [
       ...items,
-      { id: Date.now(), coordinates: { x: left, y: top } },
+      {
+        id: Date.now(),
+        coordinates: { x: floorToGrid(clientX), y: floorToGrid(clientY) },
+      },
     ]);
   }, []);
 

@@ -1,4 +1,3 @@
-import { gridSize } from "../constants";
+import { GRID_SIZE } from "../constants";
 
-export const round = (num?: number) =>
-  num ? Math.round(num / gridSize) * gridSize : undefined;
+export const floorToGrid = (num = 0) => Math.floor(num / GRID_SIZE) * GRID_SIZE;

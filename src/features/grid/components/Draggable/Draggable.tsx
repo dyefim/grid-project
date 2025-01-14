@@ -4,7 +4,7 @@ import type { DraggableSyntheticListeners } from "@dnd-kit/core";
 import type { Transform } from "@dnd-kit/utilities";
 
 import styles from "./Draggable.module.css";
-import { gridSize } from "../../constants";
+import { GRID_SIZE } from "../../constants";
 
 interface Props {
   dragging?: boolean;
@@ -26,7 +26,7 @@ export const Draggable = forwardRef<HTMLButtonElement, Props>(
         style={
           {
             ...style,
-            "--item-size": `${gridSize}px`,
+            "--item-size": `${GRID_SIZE}px`,
             "--translate-x": `${transform?.x ?? 0}px`,
             "--translate-y": `${transform?.y ?? 0}px`,
           } as React.CSSProperties
