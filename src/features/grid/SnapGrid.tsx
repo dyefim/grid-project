@@ -4,11 +4,13 @@ import { GRID_SIZE } from "./constants";
 import { Grid } from "./components/Grid";
 import useGridItems from "./hooks/useGridItems";
 import { MovableItem } from "./components/MovableItem";
+import { TooltipMenu } from "./components/TooltipMenu";
 
 const snapToGrid = createSnapModifier(GRID_SIZE);
 
 export const SnapGrid = () => {
-  const { items, updateItemPosition } = useGridItems();
+  const { items, tooltipCoordinates, updateItemPosition, createItem, cancelTooltip } =
+    useGridItems();
 
   return (
     <>
@@ -21,7 +23,12 @@ export const SnapGrid = () => {
           updateItemPosition={updateItemPosition}
         />
       ))}
-      <Grid size={GRID_SIZE} />
+      <TooltipMenu
+        tooltipCoordinates={tooltipCoordinates}
+        onCreate={createItem}
+        onCancel={cancelTooltip}
+      />
+      <Grid />
     </>
   );
 };

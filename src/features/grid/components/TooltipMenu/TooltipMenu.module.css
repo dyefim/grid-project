@@ -1,0 +1,39 @@
+.tooltip {
+  background-color: black;
+  border: 1px solid #ccc;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transform: translate(
+    calc(var(--grid-size) / 2),
+    calc(var(--grid-size) / 1.5)
+  );
+}
+
+.tooltip p {
+  margin: 4px;
+}
+
+.tooltip button {
+  margin: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.tooltip button:first-of-type {
+  background-color: springgreen;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(4px, -28px);
+  border-width: 16px;
+  border-style: solid;
+  border-color: transparent transparent black transparent; /* White arrow */
+  z-index: -1; /* Place the arrow behind the tooltip */
+}

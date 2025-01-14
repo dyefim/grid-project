@@ -31,6 +31,7 @@ const DraggableItem = ({ id, top, left }: DraggableItemProps) => {
 
   return (
     <Draggable
+      children="Eddie"
       ref={setNodeRef}
       dragging={isDragging}
       listeners={listeners}
