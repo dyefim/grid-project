@@ -1,105 +1,109 @@
-import React, { useMemo, useState } from "react";
-import {
-  DndContext,
-  useDraggable,
-  useSensor,
-  MouseSensor,
-  TouchSensor,
-  KeyboardSensor,
-  Modifiers,
-  useSensors,
-} from "@dnd-kit/core";
+import React, { useState } from "react";
+import { DndContext, useDraggable, Modifiers } from "@dnd-kit/core";
 import { createSnapModifier } from "@dnd-kit/modifiers";
 import type { Coordinates } from "@dnd-kit/utilities";
 
+import { gridSize } from "./constants";
 import { Grid } from "./components/Grid";
 import { Draggable } from "./components/Draggable/Draggable";
+import useGridItems, { Item } from "./hooks/useGridClickCoordinates";
 
-function DraggableItem({ style, top, left, buttonStyle }: DraggableItemProps) {
-  const { attributes, isDragging, listeners, setNodeRef, transform } =
-    useDraggable({
-      id: "draggable",
-    });
-
-  return (
-    <Draggable
-      ref={setNodeRef}
-      dragging={isDragging}
-      listeners={listeners}
-      style={{ ...style, top, left }}
-      buttonStyle={buttonStyle}
-      transform={transform}
-      {...attributes}
-    />
-  );
-}
-
-const gridSize = 60;
-
-const defaultCoordinates = {
-  x: 0,
-  y: 0,
-};
+const snapToGrid = createSnapModifier(gridSize);
 
 interface Props {
+  id: number;
   handle?: boolean;
   modifiers?: Modifiers;
   buttonStyle?: React.CSSProperties;
-  style?: React.CSSProperties;
-  label?: string;
+  initialCoordinates: Coordinates;
+  updateItemPosition: (item: Item) => void;
 }
 
-function DraggableStory({ modifiers, style, buttonStyle }: Props) {
-  const [{ x, y }, setCoordinates] = useState<Coordinates>(defaultCoordinates);
-  const mouseSensor = useSensor(MouseSensor);
-  const touchSensor = useSensor(TouchSensor);
-  const keyboardSensor = useSensor(KeyboardSensor, {});
-  const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
+function MovableItem({
+  id,
+  modifiers,
+  buttonStyle,
+  initialCoordinates,
+  updateItemPosition,
+}: Props) {
+  const [{ x, y }, setCoordinates] = useState<Coordinates>(initialCoordinates);
 
   return (
     <DndContext
-      sensors={sensors}
       onDragEnd={({ delta }) => {
         setCoordinates(({ x, y }) => {
-          return {
-            x: x + delta.x,
-            y: y + delta.y,
-          };
+          const newX = x + delta.x;
+          const newY = y + delta.y;
+
+          updateItemPosition({ id, coordinates: { x: newX, y: newY } });
+
+          return { x: newX, y: newY };
         });
       }}
       modifiers={modifiers}
     >
-      <DraggableItem top={y} left={x} style={style} buttonStyle={buttonStyle} />
+      <DraggableItem top={y} left={x} buttonStyle={buttonStyle} />
     </DndContext>
   );
 }
 
 interface DraggableItemProps {
   handle?: boolean;
-  style?: React.CSSProperties;
   buttonStyle?: React.CSSProperties;
   top?: number;
   left?: number;
 }
 
-export const SnapGrid = () => {
-  const style = {
-    alignItems: "flex-start",
+function DraggableItem({ top, left, buttonStyle }: DraggableItemProps) {
+  const { attributes, isDragging, listeners, setNodeRef, transform } =
+    useDraggable({
+      id: `draggable-${top}-${left}`, // Ensure a unique id for each item
+    });
+
+  const round = (num = 0) => Math.round(num / gridSize) * gridSize;
+
+  const style: React.CSSProperties = {
+    position: "absolute", // Absolute position for precise placement
+    top: round(top),
+    left: round(left),
+    transform: transform
+      ? `translate(${transform.x}px, ${transform.y}px)`
+      : undefined,
+    transition: isDragging ? "none" : "all 0.2s",
+    ...buttonStyle,
   };
+
+  return (
+    <Draggable
+      ref={setNodeRef}
+      dragging={isDragging}
+      listeners={listeners}
+      style={style}
+      {...attributes}
+    />
+  );
+}
+
+export const SnapGrid = () => {
   const buttonStyle = {
     width: gridSize,
     height: gridSize,
   };
-  const snapToGrid = useMemo(() => createSnapModifier(gridSize), [gridSize]);
+
+  const { items, updateItemPosition } = useGridItems();
 
   return (
     <>
-      <DraggableStory
-        modifiers={[snapToGrid]}
-        style={style}
-        buttonStyle={buttonStyle}
-        key={gridSize}
-      />
+      {items.map(({ id, coordinates }) => (
+        <MovableItem
+          key={id}
+          id={id}
+          modifiers={[snapToGrid]}
+          buttonStyle={buttonStyle}
+          initialCoordinates={coordinates}
+          updateItemPosition={updateItemPosition}
+        />
+      ))}
       <Grid size={gridSize} />
     </>
   );
