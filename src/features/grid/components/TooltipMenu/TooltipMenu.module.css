@@ -24,6 +24,7 @@
 
 .tooltip button:first-of-type {
   background-color: springgreen;
+  color: black;
 }
 
 .tooltip::after {
