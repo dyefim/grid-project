@@ -1,0 +1,50 @@
+@property --progress {
+  syntax: "<number>";
+  initial-value: 0;
+  inherits: false;
+}
+
+.Draggable {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform 250ms ease;
+
+  > button {
+    appearance: none;
+    outline: none;
+    background-color: #181a22;
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
+      scale(var(--scale, 1));
+    transition: box-shadow 300ms ease;
+  }
+
+  &.dragging {
+    z-index: 1;
+    transition: none;
+
+    * {
+      cursor: grabbing;
+    }
+
+    > button {
+      --scale: 1.06;
+      --box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
+        0px 15px 15px 0 rgba(34, 33, 81, 0.25);
+
+      &:focus-visible {
+        --box-shadow: 0 0px 10px 2px #4c9ffe;
+      }
+    }
+  }
+
+  &.dragging {
+    > button {
+      animation: pop 250ms cubic-bezier(0.18, 0.67, 0.6, 1.22);
+    }
+  }
+}
