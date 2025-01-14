@@ -14,7 +14,9 @@
 
   > button {
     min-height: var(--item-size);
+    max-height: var(--item-size);
     min-width: var(--item-size);
+    max-width: var(--item-size);
     background-color: #181a22;
     border-radius: 5px;
     box-shadow: var(--box-shadow);
@@ -36,10 +38,6 @@
       --scale: 1.15;
       --box-shadow: -1px 0 15px 0 rgba(34, 33, 81, 0.01),
         0px 15px 15px 0 rgba(34, 33, 81, 0.25);
-
-      &:focus-visible {
-        --box-shadow: 0 0px 10px 2px #4c9ffe;
-      }
     }
   }
 }

@@ -9,8 +9,13 @@ import { TooltipMenu } from "./components/TooltipMenu";
 const snapToGrid = createSnapModifier(GRID_SIZE);
 
 export const SnapGrid = () => {
-  const { items, tooltipCoordinates, updateItemPosition, createItem, cancelTooltip } =
-    useGridItems();
+  const {
+    items,
+    tooltipCoordinates,
+    updateItemPosition,
+    createItem,
+    cancelTooltip,
+  } = useGridItems();
 
   return (
     <>
